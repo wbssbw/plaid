@@ -1,5 +1,5 @@
 use super::General;
-use crate::{apis::ApiError, data::DelayedMessage, executor::Message};
+use crate::{apis::ApiError};
 
 use ring::rand::SecureRandom;
 
@@ -11,7 +11,7 @@ impl General {
             Ok(()) => Ok(buf),
             Err(_) => {
                 error!("Failed to generate randomness!! This should be impossible.");
-                return Err(ApiError::ImpossibleError);
+                Err(ApiError::ImpossibleError)
             }
         }
     }

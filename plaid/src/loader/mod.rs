@@ -97,8 +97,7 @@ impl PlaidModule {
     pub fn get_persistent_response_data(&self) -> Option<String> {
         self.persistent_response
             .as_ref()
-            .map(|x| x.get_data().ok().flatten())
-            .flatten()
+            .and_then(|x| x.get_data().ok().flatten())
     }
 }
 
@@ -274,7 +273,7 @@ pub fn load(config: Configuration) -> Result<PlaidModules, ()> {
         let plaid_module = PlaidModule {
             computation_limit,
             page_limit: page_count,
-            secrets: byte_secrets.get(&type_).map(|x| x.clone()),
+            secrets: byte_secrets.get(&type_).cloned(),
             cache,
             name: filename.clone(),
             module,

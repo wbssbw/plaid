@@ -53,9 +53,9 @@ impl Slack {
                 let response = r.text().await;
                 error!("Slack data returned: {}", response.unwrap_or_default());
 
-                return Err(ApiError::SlackError(SlackError::UnexpectedStatusCode(status.as_u16())))
+                Err(ApiError::SlackError(SlackError::UnexpectedStatusCode(status.as_u16())))
             }
-            Err(e) => return Err(ApiError::NetworkError(e))
+            Err(e) => Err(ApiError::NetworkError(e))
         }
     }
 

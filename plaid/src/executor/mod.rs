@@ -113,9 +113,9 @@ pub enum ModuleExecutionError {
     UnknownExecutionError(String),
 }
 
-impl Into<ExecutorError> for ModuleExecutionError {
-    fn into(self) -> ExecutorError {
-        ExecutorError::ModuleExecutionError(self)
+impl From<ModuleExecutionError> for ExecutorError {
+    fn from(val: ModuleExecutionError) -> Self {
+        ExecutorError::ModuleExecutionError(val)
     }
 }
 
@@ -264,14 +264,14 @@ fn update_persistent_response(
     ) {
         (None, _) => {
             // There was no response to save
-            return Ok(());
+            Ok(())
         }
         (Some(_), None) => {
             warn!(
                 "{} tried to set a persistent response but it is not allowed to do so",
                 plaid_module.name
             );
-            return Ok(());
+            Ok(())
         }
         (Some(response), Some(pr)) => {
             // Check to see if the response size is within limits
@@ -382,7 +382,7 @@ fn execution_loop(
             }
 
             // Update the persistent response
-            update_persistent_response(&plaid_module, &env, &mut store)?;
+            update_persistent_response(plaid_module, &env, &mut store)?;
         }
     }
     Err(ExecutorError::IncomingLogError)
@@ -395,7 +395,7 @@ fn determine_error(
     mut store: &mut Store,
 ) -> ModuleExecutionError {
     // First check to see if we've exhausted computation
-    if let MeteringPoints::Exhausted = get_remaining_points(&mut store, &instance) {
+    if let MeteringPoints::Exhausted = get_remaining_points(&mut store, instance) {
         return ModuleExecutionError::ComputationExhausted(computation_limit);
     }
 
@@ -445,8 +445,7 @@ impl Executor {
         let persistent_response = plaid_module
             .persistent_response
             .as_ref()
-            .map(|pr| pr.get_data().ok())
-            .flatten()
+            .and_then(|pr| pr.get_data().ok())
             .flatten();
 
         let (mut store, instance, entrypoint, env) = prepare_for_execution(

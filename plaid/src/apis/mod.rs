@@ -80,25 +80,13 @@ impl Api {
         log_sender: Sender<Message>,
         delayed_log_sender: Sender<DelayedMessage>,
     ) -> Self {
-        let general = match config.general {
-            Some(gc) => Some(General::new(gc, log_sender, delayed_log_sender)),
-            _ => None,
-        };
+        let general = config.general.map(|gc| General::new(gc, log_sender, delayed_log_sender));
 
-        let github = match config.github {
-            Some(gh) => Some(Github::new(gh)),
-            _ => None,
-        };
+        let github = config.github.map(Github::new);
 
-        let okta = match config.okta {
-            Some(oc) => Some(Okta::new(oc)),
-            _ => None,
-        };
+        let okta = config.okta.map(Okta::new);
 
-        let pagerduty = match config.pagerduty {
-            Some(pd) => Some(PagerDuty::new(pd)),
-            _ => None,
-        };
+        let pagerduty = config.pagerduty.map(PagerDuty::new);
 
         #[cfg(feature = "quorum")]
         let quorum = match config.quorum {
@@ -108,30 +96,15 @@ impl Api {
         #[cfg(not(feature = "quorum"))]
         let quorum = None;
 
-        let rustica = match config.rustica {
-            Some(q) => Some(Rustica::new(q)),
-            _ => None,
-        };
+        let rustica = config.rustica.map(Rustica::new);
 
-        let slack = match config.slack {
-            Some(sc) => Some(Slack::new(sc)),
-            _ => None,
-        };
+        let slack = config.slack.map(Slack::new);
 
-        let splunk = match config.splunk {
-            Some(sp) => Some(Splunk::new(sp)),
-            _ => None,
-        };
+        let splunk = config.splunk.map(Splunk::new);
 
-        let yubikey = match config.yubikey {
-            Some(yk) => Some(Yubikey::new(yk)),
-            _ => None,
-        };
+        let yubikey = config.yubikey.map(Yubikey::new);
 
-        let web = match config.web {
-            Some(web) => Some(Web::new(web)),
-            _ => None,
-        };
+        let web = config.web.map(Web::new);
 
         Self {
             runtime: Runtime::new().unwrap(),

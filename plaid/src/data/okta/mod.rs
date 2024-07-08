@@ -136,7 +136,7 @@ impl Okta {
                     // then be restarted by an orchestration service
                     self.logger
                         .send(Message::new(
-                            format!("okta"),
+                            "okta".to_string(),
                             serde_json::to_string(&log).unwrap().as_bytes().to_vec(),
                             LogSource::Generator(Generator::Okta),
                             self.config.logbacks_allowed.clone(),

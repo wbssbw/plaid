@@ -48,7 +48,7 @@ pub fn fake_wbindgen_throw(x: i32, y: i32) {
 
 pub fn fake_wbindgen_externref_table_grow(x: i32) -> i32 {
     warn!("Fake __wbindgen_externref_table_grow called with placeholder: {x}");
-    return 0;
+    0
 }
 
 /// Implement a way for a module to get the current unixtime
@@ -70,7 +70,7 @@ pub fn link_functions_to_module(
             continue;
         }
 
-        let func = to_api_function(function_name, &mut store, env.clone());
+        let func = to_api_function(function_name, store, env.clone());
         if let Some(func) = func {
             exports.insert(function_name.to_string(), func);
             continue;

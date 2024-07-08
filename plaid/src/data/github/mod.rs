@@ -182,7 +182,7 @@ impl Github {
                 let log = self.canonicalization.pop().unwrap();
                 self.logger
                     .send(Message::new(
-                        format!("github"),
+                        "github".to_string(),
                         log.0.serialized_log.into_bytes(),
                         LogSource::Generator(Generator::Github),
                         self.config.logbacks_allowed.clone(),

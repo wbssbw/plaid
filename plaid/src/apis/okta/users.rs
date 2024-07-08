@@ -9,8 +9,8 @@ impl Okta {
             .header("Content-Type", "application/json")
             .header("Accept", "application/json");
     
-        let response = res.send().await.map_err(|e| ApiError::NetworkError(e))?;
-        let data = response.bytes().await.map_err(|e| ApiError::NetworkError(e))?;
+        let response = res.send().await.map_err(ApiError::NetworkError)?;
+        let data = response.bytes().await.map_err(ApiError::NetworkError)?;
 
         match String::from_utf8(data.to_vec()) {
             Ok(x) => Ok(x),

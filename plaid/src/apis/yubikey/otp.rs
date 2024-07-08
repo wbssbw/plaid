@@ -94,7 +94,7 @@ impl Yubikey {
             "REPLAYED_OTP" => Ok("REPLAYED_OTP".to_string()),
             other => {
                 error!("Received {other} error from Yubico");
-                Ok(format!("{other}"))
+                Ok(other.to_string())
             }
         }
     }

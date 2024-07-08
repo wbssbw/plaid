@@ -49,17 +49,9 @@ impl DataInternal {
         logger: Sender<Message>,
         storage: Option<Arc<Storage>>,
     ) -> Result<Self, DataError> {
-        let github = if let Some(gh) = config.github {
-            Some(github::Github::new(gh, logger.clone()))
-        } else {
-            None
-        };
+        let github = config.github.map(|gh| github::Github::new(gh, logger.clone()));
 
-        let okta = if let Some(okta) = config.okta {
-            Some(okta::Okta::new(okta, logger.clone()))
-        } else {
-            None
-        };
+        let okta = config.okta.map(|okta| okta::Okta::new(okta, logger.clone()));
 
         let internal = if let Some(internal) = config.internal {
             internal::Internal::new(internal, logger.clone(), storage.clone()).await
@@ -120,11 +112,7 @@ impl Data {
             });
         }
 
-        let internal_sender = if let Some(internal) = &di.internal {
-            Some(internal.get_sender())
-        } else {
-            None
-        };
+        let internal_sender = di.internal.as_ref().map(|internal| internal.get_sender());
 
         // Start the interval job processor
         if let Some(mut interval) = di.interval {

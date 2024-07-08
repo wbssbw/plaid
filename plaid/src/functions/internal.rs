@@ -122,7 +122,7 @@ pub fn get_time() -> u32 {
         .expect("Time went backwards")
         .as_secs();
 
-    return current_timestamp as u32;
+    current_timestamp as u32
 }
 
 /// Send a log from one module into the logging system to be picked up by another module
@@ -294,7 +294,7 @@ pub fn storage_insert(
                 "There was a storage system error when key [{key}] was accessed by [{}]: {e}",
                 env_data.name
             );
-            return FunctionErrors::InternalApiError as i32;
+            FunctionErrors::InternalApiError as i32
         }
     }
 }
@@ -403,7 +403,7 @@ pub fn cache_insert(
         Ok(Some(previous_value)) => {
             match safely_write_data_back(
                 &memory_view,
-                &previous_value.as_bytes(),
+                previous_value.as_bytes(),
                 data_buffer,
                 data_buffer_len,
             ) {
@@ -467,7 +467,7 @@ pub fn cache_get(
         Ok(Some(value)) => {
             match safely_write_data_back(
                 &memory_view,
-                &value.as_bytes(),
+                value.as_bytes(),
                 data_buffer,
                 data_buffer_len,
             ) {

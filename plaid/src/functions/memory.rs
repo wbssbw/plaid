@@ -28,7 +28,7 @@ pub fn get_memory<'a>(env: &FunctionEnvMut<Env>, store: &'a StoreRef) -> Result<
 /// Safely get a string from the guest's memory. This function will take a pointer provided by the
 /// guest, then use a built in function to read the string.
 pub fn safely_get_string(memory_view: &MemoryView, data_buffer: WasmPtr<u8>, buffer_size: u32) -> Result<String, FunctionErrors> {
-    match data_buffer.read_utf8_string(&memory_view, buffer_size as u32) {
+    match data_buffer.read_utf8_string(memory_view, buffer_size) {
         Ok(s) => Ok(s),
         Err(_) => {
             error!("Failed to read the log message from the guest's memory");
@@ -61,12 +61,12 @@ pub fn safely_write_data_back(memory_view: &MemoryView, data: &[u8], data_buffer
     }
 
     let values = data_buffer
-        .slice(&memory_view, data.len() as u32)
+        .slice(memory_view, data.len() as u32)
         .map_err(|_| FunctionErrors::CouldNotGetAdequateMemory)?;
 
     
     for i in 0..data.len() {
-        if let Err(_) = values.index(i as u64).write(data[i]) {
+        if values.index(i as u64).write(data[i]).is_err() {
             return Err(FunctionErrors::FailedToWriteGuestMemory);
         }
     }
