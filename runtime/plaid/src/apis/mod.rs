@@ -12,13 +12,13 @@ pub mod web;
 pub mod yubikey;
 
 #[cfg(feature = "aws")]
+use crate::apis::aws::kms::KmsErrors;
+#[cfg(feature = "aws")]
 use aws::s3::S3Errors;
 #[cfg(feature = "aws")]
 use aws::{Aws, AwsConfig};
-#[cfg(feature = "aws")]
-use aws_sdk_kms::operation::get_public_key::GetPublicKeyError;
-#[cfg(feature = "aws")]
-use aws_sdk_kms::{error::SdkError, operation::sign::SignError};
+
+use crate::{data::DelayedMessage, executor::Message};
 use crossbeam_channel::Sender;
 use general::{General, GeneralConfig};
 use github::{Github, GithubConfig};
@@ -32,9 +32,6 @@ use splunk::{Splunk, SplunkConfig};
 use tokio::runtime::Runtime;
 use web::{Web, WebConfig};
 use yubikey::{Yubikey, YubikeyConfig};
-
-use crate::data::DelayedMessage;
-use crate::executor::Message;
 
 use self::rustica::{Rustica, RusticaConfig};
 
@@ -80,11 +77,9 @@ pub enum ApiError {
     MissingParameter(String),
     GitHubError(github::GitHubError),
     #[cfg(feature = "aws")]
-    KmsSignError(SdkError<SignError>),
-    #[cfg(feature = "aws")]
-    KmsGetPublicKeyError(SdkError<GetPublicKeyError>),
-    #[cfg(feature = "aws")]
     S3Error(aws::s3::S3Errors),
+    #[cfg(feature = "aws")]
+    KmsError(aws::kms::KmsErrors),
     NetworkError(reqwest::Error),
     NpmError(NpmError),
     OktaError(okta::OktaError),
@@ -101,6 +96,13 @@ pub enum ApiError {
 impl From<S3Errors> for ApiError {
     fn from(e: S3Errors) -> Self {
         Self::S3Error(e)
+    }
+}
+
+#[cfg(feature = "aws")]
+impl From<KmsErrors> for ApiError {
+    fn from(e: KmsErrors) -> Self {
+        Self::KmsError(e)
     }
 }
 
