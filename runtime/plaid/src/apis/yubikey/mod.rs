@@ -16,6 +16,7 @@ use super::default_timeout_seconds;
 #[derive(Deserialize)]
 pub struct YubikeyConfig {
     /// Client ID for the Yubico API service
+    #[serde(deserialize_with = "deserialize_yubi_client_id")]
     client_id: u64,
     /// Secret key for the Yubico API service
     secret_key: String,
@@ -23,6 +24,19 @@ pub struct YubikeyConfig {
     /// If no value is provided, the result of `default_timeout_seconds()` will be used.
     #[serde(default = "default_timeout_seconds")]
     api_timeout_seconds: u64,
+}
+
+/// Custom parser for client_id. Returns an error if an ID of 0 is provided
+fn deserialize_yubi_client_id<'de, D>(deserializer: D) -> Result<u64, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    let id = u64::deserialize(deserializer)?;
+    if id == 0 {
+        return Err(serde::de::Error::custom("Yubico client ID must be nonzero"));
+    } else {
+        Ok(id)
+    }
 }
 
 /// The YubiKey API
