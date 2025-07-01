@@ -1,7 +1,8 @@
 use crate::apis::Api;
 
 use crate::functions::{
-    create_bindgen_externref_xform, create_bindgen_placeholder, link_functions_to_module, LinkError,
+    create_bindgen_externref_xform, create_bindgen_placeholder, create_stdio_placehodler,
+    link_functions_to_module, LinkError,
 };
 use crate::loader::PlaidModule;
 use crate::logging::{Logger, LoggingError};
@@ -283,6 +284,7 @@ fn prepare_for_execution(
         "__wbindgen_placeholder__",
         create_bindgen_placeholder(&mut store),
     );
+    imports.register_namespace("__stdio", create_stdio_placehodler(&mut store));
     imports.register_namespace(
         "__wbindgen_externref_xform__",
         create_bindgen_externref_xform(&mut store),

@@ -365,6 +365,10 @@ impl PlaidModule {
             info!("\tImport: {}", import.name());
         }
 
+        for export in module.exports() {
+            info!("\tExport: {}", export.name());
+        }
+
         Ok(Self {
             name: filename.to_string(),
             module,

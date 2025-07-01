@@ -45,6 +45,40 @@ impl std::fmt::Display for LinkError {
     }
 }
 
+pub fn fake_stdio_exit() {
+    warn!("placeholder")
+}
+pub fn fake_proc_exit(placeholder: i32) {
+    warn!("placeholder")
+}
+pub fn fake_main_main(placeholder: i32) {
+    warn!("placeholder")
+}
+pub fn fake_arc4random(placeholder: i32) {
+    warn!("placeholder")
+}
+pub fn fake_fd_write(placeholder: i32) {
+    warn!("placeholder")
+}
+pub fn fake_tinygo_getCurrentStackPointer(placeholder: i32) {
+    warn!("placeholder")
+}
+pub fn fake_runtime_ticks(placeholder: i32) {
+    warn!("placeholder")
+}
+pub fn fake_syscall_js_valueGet(placeholder: i32) {
+    warn!("placeholder")
+}
+pub fn fake_syscall_js_valuePrepareString(placeholder: i32) {
+    warn!("placeholder")
+}
+pub fn fake_syscall_js_valueLoadString(placeholder: i32) {
+    warn!("placeholder")
+}
+pub fn fake_syscall_js_finalizeRef(placeholder: i32) {
+    warn!("placeholder")
+}
+
 pub fn fake_wbindgen_describe(placeholder: i32) {
     warn!("Fake __wbindgen_describe called with placeholder: {placeholder}");
 }
@@ -100,11 +134,59 @@ pub fn create_bindgen_placeholder(mut store: &mut Store) -> Exports {
         Function::new_typed(&mut store, fake_wbindgen_throw),
     );
 
+    // exports.insert("proc_exit", Function::new_typed(&mut store, fake_proc_exit));
+    // exports.insert("main.main", Function::new_typed(&mut store, fake_main_main));
+    // exports.insert(
+    //     "arc4random",
+    //     Function::new_typed(&mut store, fake_arc4random),
+    // );
+    // exports.insert("fd_write", Function::new_typed(&mut store, fake_fd_write));
+    // exports.insert(
+    //     "tinygo_getCurrentStackPointer",
+    //     Function::new_typed(&mut store, fake_tinygo_getCurrentStackPointer),
+    // );
+    // exports.insert(
+    //     "runtime.ticks",
+    //     Function::new_typed(&mut store, fake_runtime_ticks),
+    // );
+    // exports.insert(
+    //     "syscall/js.valueGet",
+    //     Function::new_typed(&mut store, fake_syscall_js_valueGet),
+    // );
+    // exports.insert(
+    //     "syscall/js.valuePrepareString",
+    //     Function::new_typed(&mut store, fake_syscall_js_valuePrepareString),
+    // );
+    // exports.insert(
+    //     "syscall/js.valueLoadString",
+    //     Function::new_typed(&mut store, fake_syscall_js_valueLoadString),
+    // );
+    // exports.insert(
+    //     "syscall/js.finalizeRef",
+    //     Function::new_typed(&mut store, fake_syscall_js_finalizeRef),
+    // );
+
+    exports
+}
+
+pub fn create_stdio_placehodler(mut store: &mut Store) -> Exports {
+    let mut exports = Exports::new();
+
+    exports.insert(
+        "__stdio_exit",
+        Function::new_typed(&mut store, fake_stdio_exit),
+    );
+
     exports
 }
 
 pub fn create_bindgen_externref_xform(mut store: &mut Store) -> Exports {
     let mut exports = Exports::new();
+
+    exports.insert(
+        "__stdio_exit",
+        Function::new_typed(&mut store, fake_stdio_exit),
+    );
 
     exports.insert(
         "__wbindgen_externref_table_grow",
